@@ -24,7 +24,8 @@ class TodoListViewControler: UITableViewController {
         super.viewDidLoad()
         
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-//        print("current date: \(Date.init())")
+        
+
     }
 
     
@@ -52,7 +53,7 @@ class TodoListViewControler: UITableViewController {
     
     // MARK: - tableView delegate methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+     
         if let todoItem = todoItems?[indexPath.row] {
             do {
                 try realm.write {
@@ -63,7 +64,10 @@ class TodoListViewControler: UITableViewController {
             }
         }
         
+        
         tableView.deselectRow(at: indexPath, animated: true)
+        tableView.reloadData()
+        
     }
     
     
@@ -126,7 +130,12 @@ extension TodoListViewControler: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
 
         if searchText.count != 0 {
-            todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "title", ascending: true)
+            todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "date_created", ascending: true)
+
+            // KAN OOK:
+//            if let itemArray = selectedCategory?.items {
+//                todoItems = itemArray.filter("title CONTAINS[cd] %@", searchBar.text!)
+//            }
             tableView.reloadData()
         } else{
             loadItems()
